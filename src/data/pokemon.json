@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "name": "Bulbasaur",
+    "type": "Grass"
+  },
+  {
+    "id": 4,
+    "name": "Charmander",
+    "type": "Fire"
+  },
+  {
+    "id": 7,
+    "name": "Squirtle",
+    "type": "Water"
+  },
+  {
+    "id": 25,
+    "name": "Pikachu",
+    "type": "Electric"
+  },
+  {
+    "id": 133,
+    "name": "Eevee",
+    "type": "Normal"
+  }
+]
