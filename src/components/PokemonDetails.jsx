@@ -11,10 +11,8 @@ export default function PokemonDetails({ pokemon }) {
   return (
     <div>
       <h2>Pokémon Details</h2>
-
       <h3>{pokemon.name}</h3>
       <p>ID: {pokemon.id}</p>
-      <p>Type: {pokemon.type}</p>
     </div>
   );
 }

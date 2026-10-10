@@ -9,7 +9,7 @@ export default function PokemonList({ pokemon, onSelect }) {
           onClick={() => onSelect(item)}
         >
           <h3>{item.name}</h3>
-          <p>{item.type}</p>
+          <p>#{item.id}</p>
         </button>
       ))}
     </div>
