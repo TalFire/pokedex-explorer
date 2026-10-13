@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import PokemonList from "./components/PokemonList";
 import PokemonDetails from "./components/PokemonDetails";
 import SearchBar from "./components/SearchBar";
+import "./App.css";
 
 export default function App() {
   const [pokemon, setPokemon] = useState([]);
@@ -20,11 +21,17 @@ export default function App() {
         return response.json();
       })
       .then((data) => {
-        const pokemonList = data.results.map((item, index) => ({
-          id: index + 1,
-          name: item.name,
-          url: item.url,
-        }));
+        const pokemonList = data.results.map((item) => {
+          const id = Number(
+            item.url.split("/").filter(Boolean).pop()
+          );
+
+          return {
+            id: id,
+            name: item.name,
+            url: item.url,
+          };
+        });
 
         setPokemon(pokemonList);
         setLoading(false);
@@ -40,28 +47,48 @@ export default function App() {
   );
 
   if (loading) {
-    return <p>Loading Pokémon...</p>;
+    return (
+      <main className="status-screen">
+        <p>Loading Pokémon...</p>
+      </main>
+    );
   }
 
   if (error) {
-    return <p>Error: {error}</p>;
+    return (
+      <main className="status-screen">
+        <p>Error: {error}</p>
+      </main>
+    );
   }
 
   return (
-    <div>
-      <h1>Pokédex Explorer</h1>
+    <div className="app">
+      <header className="app-header">
+        <h1>Pokédex Explorer</h1>
+        <p>
+          Search the Pokédex and select a Pokémon to view its details.
+        </p>
+      </header>
 
-      <SearchBar
-        searchTerm={searchTerm}
-        onSearch={setSearchTerm}
-      />
+      <main className="pokedex-layout">
+        <section className="pokemon-list-panel">
+          <SearchBar
+            searchTerm={searchTerm}
+            onSearch={setSearchTerm}
+          />
 
-      <PokemonList
-        pokemon={filteredPokemon}
-        onSelect={setSelectedPokemon}
-      />
+          <PokemonList
+            pokemon={filteredPokemon}
+            selectedPokemon={selectedPokemon}
+            onSelect={setSelectedPokemon}
+          />
+        </section>
 
-      <PokemonDetails pokemon={selectedPokemon} />
+        <section className="pokemon-details-panel">
+          <PokemonDetails pokemon={selectedPokemon} />
+        </section>
+      </main>
     </div>
   );
 }

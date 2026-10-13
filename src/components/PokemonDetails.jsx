@@ -34,26 +34,24 @@ export default function PokemonDetails({ pokemon }) {
 
   if (!pokemon) {
     return (
-      <div>
+      <div className="details-message">
         <h2>Pokémon Details</h2>
-        <p>Pick a Pokémon from the list</p>
+        <p>Select a Pokémon from the list.</p>
       </div>
     );
   }
 
   if (loadingDetails) {
     return (
-      <div>
-        <h2>Pokémon Details</h2>
-        <p>Loading details...</p>
+      <div className="details-message">
+        <p>Loading Pokémon details...</p>
       </div>
     );
   }
 
   if (errorDetails) {
     return (
-      <div>
-        <h2>Pokémon Details</h2>
+      <div className="details-message">
         <p>Error: {errorDetails}</p>
       </div>
     );
@@ -64,46 +62,65 @@ export default function PokemonDetails({ pokemon }) {
   }
 
   return (
-    <div>
-      <h2>Pokémon Details</h2>
-
+    <article className="pokemon-details">
       <img
-        src={details.sprites.front_default}
+        className="pokemon-image"
+        src={
+          details.sprites.other["official-artwork"].front_default ||
+          details.sprites.front_default
+        }
         alt={details.name}
       />
 
-      <h3>{details.name}</h3>
-
-      <p>ID: #{details.id}</p>
-
-      <p>
-        Type:{" "}
-        {details.types.map((item) => item.type.name).join(", ")}
+      <p className="details-id">
+        #{String(details.id).padStart(3, "0")}
       </p>
 
-      <p>Height: {details.height}</p>
+      <h2>{details.name}</h2>
 
-      <p>Weight: {details.weight}</p>
-
-      <h4>Abilities</h4>
-
-      <ul>
-        {details.abilities.map((item) => (
-          <li key={item.ability.name}>
-            {item.ability.name}
-          </li>
+      <div className="pokemon-types">
+        {details.types.map((item) => (
+          <span key={item.type.name}>
+            {item.type.name}
+          </span>
         ))}
-      </ul>
+      </div>
 
-      <h4>Base Stats</h4>
+      <section>
+        <h3>About</h3>
 
-      <ul>
-        {details.stats.map((item) => (
-          <li key={item.stat.name}>
-            {item.stat.name}: {item.base_stat}
-          </li>
-        ))}
-      </ul>
-    </div>
+        <p>
+          Height: {(details.height / 10).toFixed(1)} m
+        </p>
+
+        <p>
+          Weight: {(details.weight / 10).toFixed(1)} kg
+        </p>
+      </section>
+
+      <section>
+        <h3>Abilities</h3>
+
+        <ul>
+          {details.abilities.map((item) => (
+            <li key={item.ability.name}>
+              {item.ability.name}
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      <section>
+        <h3>Base Stats</h3>
+
+        <ul>
+          {details.stats.map((item) => (
+            <li key={item.stat.name}>
+              {item.stat.name}: {item.base_stat}
+            </li>
+          ))}
+        </ul>
+      </section>
+    </article>
   );
 }

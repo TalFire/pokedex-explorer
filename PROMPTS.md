@@ -58,3 +58,13 @@ Updated PokemonDetails to fetch the selected Pokémon URL and display its full A
 
 I checked:
 I selected several Pokémon, verified that their details and images change correctly, and confirmed there are no Console errors.
+
+## Task 6 — Functional cleanup and edge cases
+Prompt:
+Help me review the current Pokédex features and identify the important functional and error cases to test before final styling.
+
+Agent did:
+Provided a checklist for search, selection, API loading, error handling, details loading, and Console errors.
+
+I checked:
+Tested the application behavior, including an intentional failed API request, and verified that the main features work without Console errors.
