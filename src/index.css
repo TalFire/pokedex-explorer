@@ -1,18 +1,10 @@
-* {
-  box-sizing: border-box;
-}
-
-html {
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-button,
-input {
-  font: inherit;
+﻿* { box-sizing: border-box; }
+html { font-family: "Segoe UI", Arial, sans-serif; color: #edf3f5; background: #101920; color-scheme: dark; }
+body { margin: 0; min-width: 320px; min-height: 100vh; background: radial-gradient(ellipse at 50% 0%, #273944 0, #101920 70%); }
+button, input { font: inherit; }
+button { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, input:focus-visible { outline: 3px solid #71e5f5; outline-offset: 3px; }
+::selection { background: #73e3eb; color: #10252c; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
 }

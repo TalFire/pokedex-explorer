@@ -1,3 +1,5 @@
+import PokemonListItem from "./PokemonListItem";
+
 export default function PokemonList({
   pokemon,
   selectedPokemon,
@@ -5,33 +7,24 @@ export default function PokemonList({
 }) {
   if (pokemon.length === 0) {
     return (
-      <div className="no-results">
-        <p>No Pokémon found.</p>
+      <div className="no-results" role="status">
+        <span className="signal-icon" aria-hidden="true">?</span>
+        <h3>No Pokémon found</h3>
+        <p>Try another name or clear your search to explore the database.</p>
       </div>
     );
   }
 
   return (
-    <div className="pokemon-list">
+    <ul className="pokemon-list" aria-label="Pokémon database">
       {pokemon.map((item) => (
-        <button
+        <PokemonListItem
           key={item.id}
-          className={
-            selectedPokemon?.id === item.id
-              ? "pokemon-list-item selected"
-              : "pokemon-list-item"
-          }
-          onClick={() => onSelect(item)}
-        >
-          <span className="pokemon-id">
-            #{String(item.id).padStart(3, "0")}
-          </span>
-
-          <span className="pokemon-name">
-            {item.name}
-          </span>
-        </button>
+          pokemon={item}
+          isSelected={selectedPokemon?.id === item.id}
+          onSelect={onSelect}
+        />
       ))}
-    </div>
+    </ul>
   );
 }
