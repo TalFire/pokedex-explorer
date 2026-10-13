@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import PokemonList from "./components/PokemonList";
 import PokemonDetails from "./components/PokemonDetails";
+import SearchBar from "./components/SearchBar";
 
 export default function App() {
   const [pokemon, setPokemon] = useState([]);
   const [selectedPokemon, setSelectedPokemon] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -33,6 +35,10 @@ export default function App() {
       });
   }, []);
 
+  const filteredPokemon = pokemon.filter((item) =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   if (loading) {
     return <p>Loading Pokémon...</p>;
   }
@@ -45,8 +51,13 @@ export default function App() {
     <div>
       <h1>Pokédex Explorer</h1>
 
+      <SearchBar
+        searchTerm={searchTerm}
+        onSearch={setSearchTerm}
+      />
+
       <PokemonList
-        pokemon={pokemon}
+        pokemon={filteredPokemon}
         onSelect={setSelectedPokemon}
       />
 

@@ -36,3 +36,13 @@ Helped add `pokemon`, `loading`, and `error` state and explained where `useEffec
 
 I checked:
 TODO — verify API loading, Pokémon selection, and that the Console has no errors.
+
+## Task 4 — Add Pokémon search
+Prompt:
+Help me add a search box that filters the Pokémon list by name.
+
+Agent did:
+Added a SearchBar component, search state in App, and filtered the Pokémon list using filter().
+
+I checked:
+I tested several searches, verified that clearing the search restores the full list, checked the no-results message, and confirmed there are no Console errors.
