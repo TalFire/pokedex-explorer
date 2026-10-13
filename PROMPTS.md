@@ -46,3 +46,15 @@ Added a SearchBar component, search state in App, and filtered the Pokémon list
 
 I checked:
 I tested several searches, verified that clearing the search restores the full list, checked the no-results message, and confirmed there are no Console errors.
+
+---
+
+## Task 5 — Expand Pokémon details
+Prompt:
+Help me load and display full details for the selected Pokémon, including image, types, height, weight, abilities, and stats.
+
+Agent did:
+Updated PokemonDetails to fetch the selected Pokémon URL and display its full API data.
+
+I checked:
+I selected several Pokémon, verified that their details and images change correctly, and confirmed there are no Console errors.
