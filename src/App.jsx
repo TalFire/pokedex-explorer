@@ -14,15 +14,20 @@ export default function App() {
   useEffect(() => {
     fetch("https://pokeapi.co/api/v2/pokemon?limit=60")
       .then((response) => {
-        if (!response.ok) throw new Error("Failed to load Pokémon");
+        if (!response.ok) {
+          throw new Error("Failed to load Pokémon");
+        }
+
         return response.json();
       })
       .then((data) => {
         const pokemonList = data.results.map((item) => {
-          const id = Number(item.url.split("/").filter(Boolean).pop());
+          const id = Number(
+            item.url.split("/").filter(Boolean).pop()
+          );
 
           return {
-            id: id,
+            id,
             name: item.name,
             url: item.url,
           };
@@ -47,7 +52,9 @@ export default function App() {
     }
 
     const availablePokemon = selectedPokemon
-      ? pokemon.filter((item) => item.id !== selectedPokemon.id)
+      ? pokemon.filter(
+          (item) => item.id !== selectedPokemon.id
+        )
       : pokemon;
 
     if (availablePokemon.length === 0) {
@@ -64,10 +71,44 @@ export default function App() {
     setSelectedPokemon(randomPokemon);
   }
 
+  function getPokemonOfTheDay() {
+    if (pokemon.length === 0) {
+      return null;
+    }
+
+    const today = new Date();
+
+    const dayNumber = Math.floor(
+      Date.UTC(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate()
+      ) / 86400000
+    );
+
+    const dailyIndex = dayNumber % pokemon.length;
+
+    return pokemon[dailyIndex];
+  }
+
+  const pokemonOfTheDay = getPokemonOfTheDay();
+
+  function handleDailyPokemon() {
+    if (!pokemonOfTheDay) {
+      return;
+    }
+
+    setSearchTerm("");
+    setSelectedPokemon(pokemonOfTheDay);
+  }
+
   return (
     <div className="app">
       <header className="app-header">
-        <div className="device-lights" aria-hidden="true">
+        <div
+          className="device-lights"
+          aria-hidden="true"
+        >
           <span className="sensor-lens" />
           <span className="indicator light-red" />
           <span className="indicator light-yellow" />
@@ -75,16 +116,21 @@ export default function App() {
         </div>
 
         <div className="header-title">
-          <p className="eyebrow">Your field companion</p>
+          <p className="eyebrow">
+            Your field companion
+          </p>
+
           <h1>
             Pokédex <span>Explorer</span>
           </h1>
         </div>
 
         <div className="system-label">
-          <span className="status-dot" /> Pokédex system
+          <span className="status-dot" />
+          Pokédex system
+
           <span className="system-version">
-            NATIONAL DATABASE / V1.1
+            NATIONAL DATABASE / V1.2
           </span>
         </div>
       </header>
@@ -96,11 +142,19 @@ export default function App() {
         >
           <div className="panel-heading">
             <div>
-              <p className="eyebrow">01 / Discovery</p>
-              <h2 id="database-heading">Pokémon database</h2>
+              <p className="eyebrow">
+                01 / Discovery
+              </p>
+
+              <h2 id="database-heading">
+                Pokémon database
+              </h2>
             </div>
 
-            <span className="panel-symbol" aria-hidden="true">
+            <span
+              className="panel-symbol"
+              aria-hidden="true"
+            >
               ≡
             </span>
           </div>
@@ -109,22 +163,82 @@ export default function App() {
             Find a Pokémon. Start exploring.
           </p>
 
-          <div className="database-actions">
-            <button
-              type="button"
-              className="random-pokemon-button"
-              onClick={handleRandomPokemon}
-              disabled={loading || Boolean(error) || pokemon.length === 0}
-            >
-              <span
-                className="random-button-icon"
-                aria-hidden="true"
-              >
-                ⟳
-              </span>
+          <div className="discovery-tools">
+            {!loading &&
+              !error &&
+              pokemonOfTheDay && (
+                <button
+                  type="button"
+                  className="daily-pokemon-card"
+                  onClick={handleDailyPokemon}
+                >
+                  <div className="daily-card-copy">
+                    <div className="daily-card-topline">
+                      <span className="daily-label">
+                        Pokémon of the day
+                      </span>
 
-              Random scan
-            </button>
+                      <span className="daily-cycle">
+                        24H
+                      </span>
+                    </div>
+
+                    <div className="daily-pokemon-title">
+                      <span className="daily-pokemon-id">
+                        #
+                        {String(
+                          pokemonOfTheDay.id
+                        ).padStart(3, "0")}
+                      </span>
+
+                      <strong>
+                        {pokemonOfTheDay.name}
+                      </strong>
+                    </div>
+
+                    <span className="daily-action">
+                      Open daily scan
+                      <span aria-hidden="true">
+                        →
+                      </span>
+                    </span>
+                  </div>
+
+                  <div
+                    className="daily-pokemon-art"
+                    aria-hidden="true"
+                  >
+                    <span className="daily-scan-ring" />
+
+                    <img
+                      src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemonOfTheDay.id}.png`}
+                      alt=""
+                    />
+                  </div>
+                </button>
+              )}
+
+            <div className="database-actions">
+              <button
+                type="button"
+                className="random-pokemon-button"
+                onClick={handleRandomPokemon}
+                disabled={
+                  loading ||
+                  Boolean(error) ||
+                  pokemon.length === 0
+                }
+              >
+                <span
+                  className="random-button-icon"
+                  aria-hidden="true"
+                >
+                  ⟳
+                </span>
+
+                Random scan
+              </button>
+            </div>
           </div>
 
           <SearchBar
@@ -145,14 +259,20 @@ export default function App() {
           </div>
 
           {loading ? (
-            <div className="database-message" role="status">
+            <div
+              className="database-message"
+              role="status"
+            >
               <span
                 className="scanner-loader"
                 aria-hidden="true"
               />
 
               <h3>Scanning database…</h3>
-              <p>Connecting to the Pokémon world.</p>
+
+              <p>
+                Connecting to the Pokémon world.
+              </p>
             </div>
           ) : error ? (
             <div
@@ -169,12 +289,17 @@ export default function App() {
               <h3>Connection error</h3>
 
               <p>
-                Unable to reach the Pokédex database.
+                Unable to reach the Pokédex
+                database.
               </p>
 
-              <p className="error-detail">{error}</p>
+              <p className="error-detail">
+                {error}
+              </p>
 
-              <p>Refresh the page to reconnect.</p>
+              <p>
+                Refresh the page to reconnect.
+              </p>
             </div>
           ) : (
             <PokemonList
@@ -185,7 +310,9 @@ export default function App() {
           )}
 
           <div
-            className={`list-footer${error ? " offline" : ""}`}
+            className={`list-footer${
+              error ? " offline" : ""
+            }`}
           >
             <span className="status-dot" />
 
@@ -207,8 +334,13 @@ export default function App() {
         >
           <div className="panel-heading">
             <div>
-              <p className="eyebrow">02 / Field research</p>
-              <h2 id="scanner-heading">Pokémon scanner</h2>
+              <p className="eyebrow">
+                02 / Field research
+              </p>
+
+              <h2 id="scanner-heading">
+                Pokémon scanner
+              </h2>
             </div>
 
             <span className="scanner-status">
@@ -218,7 +350,9 @@ export default function App() {
             </span>
           </div>
 
-          <PokemonDetails pokemon={selectedPokemon} />
+          <PokemonDetails
+            pokemon={selectedPokemon}
+          />
         </section>
       </main>
 
