@@ -1,7 +1,12 @@
 ﻿import { useEffect, useState } from "react";
 import BattleProfile from "./BattleProfile";
 
-const statLabels = {
+import type {
+  PokemonDetailsData,
+  PokemonSummary,
+} from "../types/pokemon";
+
+const statLabels: Record<string, string> = {
   hp: "HP",
   attack: "Attack",
   defense: "Defense",
@@ -10,14 +15,27 @@ const statLabels = {
   speed: "Speed",
 };
 
-export default function PokemonDetails({ pokemon }) {
+interface PokemonDetailsProps {
+  pokemon: PokemonSummary | null;
+}
+
+interface DetailsRequestState {
+  url: string | null;
+  details: PokemonDetailsData | null;
+  error: string | null;
+}
+
+export default function PokemonDetails({
+  pokemon,
+}: PokemonDetailsProps) {
   const pokemonUrl = pokemon?.url ?? null;
 
-  const [requestState, setRequestState] = useState({
-    url: null,
-    details: null,
-    error: null,
-  });
+  const [requestState, setRequestState] =
+    useState<DetailsRequestState>({
+      url: null,
+      details: null,
+      error: null,
+    });
 
   useEffect(() => {
     if (!pokemonUrl) {
@@ -36,7 +54,7 @@ export default function PokemonDetails({ pokemon }) {
           );
         }
 
-        return response.json();
+        return response.json() as Promise<PokemonDetailsData>;
       })
       .then((data) => {
         if (controller.signal.aborted) {
@@ -49,15 +67,20 @@ export default function PokemonDetails({ pokemon }) {
           error: null,
         });
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
         if (controller.signal.aborted) {
           return;
         }
 
+        const message =
+          error instanceof Error
+            ? error.message
+            : "Unknown error";
+
         setRequestState({
           url: pokemonUrl,
           details: null,
-          error: error.message,
+          error: message,
         });
       });
 
@@ -177,7 +200,7 @@ export default function PokemonDetails({ pokemon }) {
 
   const artwork =
     details.sprites.other?.["official-artwork"]
-      ?.front_default ||
+      ?.front_default ??
     details.sprites.front_default;
 
   return (
@@ -329,7 +352,7 @@ export default function PokemonDetails({ pokemon }) {
               key={item.stat.name}
             >
               <span className="stat-label">
-                {statLabels[item.stat.name] ||
+                {statLabels[item.stat.name] ??
                   item.stat.name}
               </span>
 
@@ -342,7 +365,7 @@ export default function PokemonDetails({ pokemon }) {
                 max="255"
                 value={item.base_stat}
                 aria-label={`${
-                  statLabels[item.stat.name] ||
+                  statLabels[item.stat.name] ??
                   item.stat.name
                 }: ${item.base_stat} out of 255`}
               />

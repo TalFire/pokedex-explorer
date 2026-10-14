@@ -2,48 +2,95 @@
 import PokemonList from "./components/PokemonList";
 import PokemonDetails from "./components/PokemonDetails";
 import SearchBar from "./components/SearchBar";
+
+import type {
+  PokemonListApiResponse,
+  PokemonSummary,
+} from "./types/pokemon";
+
 import "./App.css";
 
+function getCurrentDayNumber(): number {
+  const today = new Date();
+
+  return Math.floor(
+    Date.UTC(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate()
+    ) / 86400000
+  );
+}
+
+const currentDayNumber = getCurrentDayNumber();
+
 export default function App() {
-  const [pokemon, setPokemon] = useState([]);
-  const [selectedPokemon, setSelectedPokemon] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [pokemon, setPokemon] =
+    useState<PokemonSummary[]>([]);
+
+  const [selectedPokemon, setSelectedPokemon] =
+    useState<PokemonSummary | null>(null);
+
+  const [searchTerm, setSearchTerm] =
+    useState("");
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState<string | null>(null);
 
   useEffect(() => {
-    fetch("https://pokeapi.co/api/v2/pokemon?limit=60")
+    fetch(
+      "https://pokeapi.co/api/v2/pokemon?limit=60"
+    )
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Failed to load Pokémon");
+          throw new Error(
+            "Failed to load Pokémon"
+          );
         }
 
-        return response.json();
+        return response.json() as Promise<PokemonListApiResponse>;
       })
       .then((data) => {
-        const pokemonList = data.results.map((item) => {
-          const id = Number(
-            item.url.split("/").filter(Boolean).pop()
-          );
+        const pokemonList: PokemonSummary[] =
+          data.results.map((item) => {
+            const id = Number(
+              item.url
+                .split("/")
+                .filter(Boolean)
+                .pop()
+            );
 
-          return {
-            id,
-            name: item.name,
-            url: item.url,
-          };
-        });
+            return {
+              id,
+              name: item.name,
+              url: item.url,
+            };
+          });
 
         setPokemon(pokemonList);
         setLoading(false);
       })
-      .catch((error) => {
-        setError(error.message);
+      .catch((error: unknown) => {
+        const message =
+          error instanceof Error
+            ? error.message
+            : "Unknown error";
+
+        setError(message);
         setLoading(false);
       });
   }, []);
 
-  const filteredPokemon = pokemon.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredPokemon = pokemon.filter(
+    (item) =>
+      item.name
+        .toLowerCase()
+        .includes(
+          searchTerm.toLowerCase()
+        )
   );
 
   function handleRandomPokemon() {
@@ -51,47 +98,49 @@ export default function App() {
       return;
     }
 
-    const availablePokemon = selectedPokemon
-      ? pokemon.filter(
-          (item) => item.id !== selectedPokemon.id
-        )
-      : pokemon;
+    const availablePokemon =
+      selectedPokemon
+        ? pokemon.filter(
+            (item) =>
+              item.id !==
+              selectedPokemon.id
+          )
+        : pokemon;
 
     if (availablePokemon.length === 0) {
       return;
     }
 
     const randomIndex = Math.floor(
-      Math.random() * availablePokemon.length
+      Math.random() *
+        availablePokemon.length
     );
 
-    const randomPokemon = availablePokemon[randomIndex];
+    const randomPokemon =
+      availablePokemon[randomIndex];
 
     setSearchTerm("");
-    setSelectedPokemon(randomPokemon);
+    setSelectedPokemon(
+      randomPokemon
+    );
   }
 
-  function getPokemonOfTheDay() {
+  function getPokemonOfTheDay():
+    | PokemonSummary
+    | null {
     if (pokemon.length === 0) {
       return null;
     }
 
-    const today = new Date();
-
-    const dayNumber = Math.floor(
-      Date.UTC(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate()
-      ) / 86400000
-    );
-
-    const dailyIndex = dayNumber % pokemon.length;
+    const dailyIndex =
+      currentDayNumber %
+      pokemon.length;
 
     return pokemon[dailyIndex];
   }
 
-  const pokemonOfTheDay = getPokemonOfTheDay();
+  const pokemonOfTheDay =
+    getPokemonOfTheDay();
 
   function handleDailyPokemon() {
     if (!pokemonOfTheDay) {
@@ -99,7 +148,10 @@ export default function App() {
     }
 
     setSearchTerm("");
-    setSelectedPokemon(pokemonOfTheDay);
+
+    setSelectedPokemon(
+      pokemonOfTheDay
+    );
   }
 
   return (
@@ -110,8 +162,11 @@ export default function App() {
           aria-hidden="true"
         >
           <span className="sensor-lens" />
+
           <span className="indicator light-red" />
+
           <span className="indicator light-yellow" />
+
           <span className="indicator light-green" />
         </div>
 
@@ -121,12 +176,14 @@ export default function App() {
           </p>
 
           <h1>
-            Pokédex <span>Explorer</span>
+            Pokédex{" "}
+            <span>Explorer</span>
           </h1>
         </div>
 
         <div className="system-label">
           <span className="status-dot" />
+
           Pokédex system
 
           <span className="system-version">
@@ -160,7 +217,8 @@ export default function App() {
           </div>
 
           <p className="panel-description">
-            Find a Pokémon. Start exploring.
+            Find a Pokémon. Start
+            exploring.
           </p>
 
           <div className="discovery-tools">
@@ -170,7 +228,9 @@ export default function App() {
                 <button
                   type="button"
                   className="daily-pokemon-card"
-                  onClick={handleDailyPokemon}
+                  onClick={
+                    handleDailyPokemon
+                  }
                 >
                   <div className="daily-card-copy">
                     <div className="daily-card-topline">
@@ -188,17 +248,25 @@ export default function App() {
                         #
                         {String(
                           pokemonOfTheDay.id
-                        ).padStart(3, "0")}
+                        ).padStart(
+                          3,
+                          "0"
+                        )}
                       </span>
 
                       <strong>
-                        {pokemonOfTheDay.name}
+                        {
+                          pokemonOfTheDay.name
+                        }
                       </strong>
                     </div>
 
                     <span className="daily-action">
                       Open daily scan
-                      <span aria-hidden="true">
+
+                      <span
+                        aria-hidden="true"
+                      >
                         →
                       </span>
                     </span>
@@ -222,7 +290,9 @@ export default function App() {
               <button
                 type="button"
                 className="random-pokemon-button"
-                onClick={handleRandomPokemon}
+                onClick={
+                  handleRandomPokemon
+                }
                 disabled={
                   loading ||
                   Boolean(error) ||
@@ -247,7 +317,9 @@ export default function App() {
           />
 
           <div className="list-caption">
-            <span>DATABASE ENTRIES</span>
+            <span>
+              DATABASE ENTRIES
+            </span>
 
             <span role="status">
               {loading
@@ -268,10 +340,13 @@ export default function App() {
                 aria-hidden="true"
               />
 
-              <h3>Scanning database…</h3>
+              <h3>
+                Scanning database…
+              </h3>
 
               <p>
-                Connecting to the Pokémon world.
+                Connecting to the
+                Pokémon world.
               </p>
             </div>
           ) : error ? (
@@ -286,11 +361,13 @@ export default function App() {
                 !
               </span>
 
-              <h3>Connection error</h3>
+              <h3>
+                Connection error
+              </h3>
 
               <p>
-                Unable to reach the Pokédex
-                database.
+                Unable to reach the
+                Pokédex database.
               </p>
 
               <p className="error-detail">
@@ -298,20 +375,29 @@ export default function App() {
               </p>
 
               <p>
-                Refresh the page to reconnect.
+                Refresh the page to
+                reconnect.
               </p>
             </div>
           ) : (
             <PokemonList
-              pokemon={filteredPokemon}
-              selectedPokemon={selectedPokemon}
-              onSelect={setSelectedPokemon}
+              pokemon={
+                filteredPokemon
+              }
+              selectedPokemon={
+                selectedPokemon
+              }
+              onSelect={
+                setSelectedPokemon
+              }
             />
           )}
 
           <div
             className={`list-footer${
-              error ? " offline" : ""
+              error
+                ? " offline"
+                : ""
             }`}
           >
             <span className="status-dot" />
@@ -351,7 +437,9 @@ export default function App() {
           </div>
 
           <PokemonDetails
-            pokemon={selectedPokemon}
+            pokemon={
+              selectedPokemon
+            }
           />
         </section>
       </main>
@@ -362,7 +450,9 @@ export default function App() {
           aria-hidden="true"
         />
 
-        <p>Discover. Scan. Explore.</p>
+        <p>
+          Discover. Scan. Explore.
+        </p>
 
         <span className="footer-credit">
           Powered by PokéAPI

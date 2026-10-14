@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
 
+import type {
+  PokemonTypeApiResponse,
+  PokemonTypeSlot,
+} from "../types/pokemon";
+
 const typeOrder = [
   "normal",
   "fire",
@@ -21,8 +26,41 @@ const typeOrder = [
   "fairy",
 ];
 
-function calculateBattleProfile(typeData) {
-  const defensiveMultipliers = {};
+interface BattleEntry {
+  name: string;
+  multiplier: number;
+}
+
+interface BattleProfileData {
+  strongAgainst: BattleEntry[];
+  weaknesses: BattleEntry[];
+  resistances: BattleEntry[];
+  immunities: BattleEntry[];
+}
+
+interface BattleProfileProps {
+  types: PokemonTypeSlot[];
+}
+
+interface BattleState {
+  key: string;
+  data: BattleProfileData | null;
+  error: string | null;
+}
+
+interface BattleGroupProps {
+  title: string;
+  code: string;
+  items: BattleEntry[];
+  className: string;
+  emptyText: string;
+}
+
+function calculateBattleProfile(
+  typeData: PokemonTypeApiResponse[]
+): BattleProfileData {
+  const defensiveMultipliers: Record<string, number> =
+    {};
 
   typeOrder.forEach((type) => {
     defensiveMultipliers[type] = 1;
@@ -45,10 +83,14 @@ function calculateBattleProfile(typeData) {
   });
 
   const weaknesses = typeOrder
-    .filter((type) => defensiveMultipliers[type] > 1)
+    .filter(
+      (type) =>
+        defensiveMultipliers[type] > 1
+    )
     .map((type) => ({
       name: type,
-      multiplier: defensiveMultipliers[type],
+      multiplier:
+        defensiveMultipliers[type],
     }))
     .sort(
       (a, b) =>
@@ -64,7 +106,8 @@ function calculateBattleProfile(typeData) {
     )
     .map((type) => ({
       name: type,
-      multiplier: defensiveMultipliers[type],
+      multiplier:
+        defensiveMultipliers[type],
     }))
     .sort(
       (a, b) =>
@@ -73,22 +116,30 @@ function calculateBattleProfile(typeData) {
     );
 
   const immunities = typeOrder
-    .filter((type) => defensiveMultipliers[type] === 0)
+    .filter(
+      (type) =>
+        defensiveMultipliers[type] === 0
+    )
     .map((type) => ({
       name: type,
       multiplier: 0,
     }));
 
-  const strongAgainstNames = new Set();
+  const strongAgainstNames =
+    new Set<string>();
 
   typeData.forEach((type) => {
-    type.damage_relations.double_damage_to.forEach((item) => {
-      strongAgainstNames.add(item.name);
-    });
+    type.damage_relations.double_damage_to.forEach(
+      (item) => {
+        strongAgainstNames.add(item.name);
+      }
+    );
   });
 
   const strongAgainst = typeOrder
-    .filter((type) => strongAgainstNames.has(type))
+    .filter((type) =>
+      strongAgainstNames.has(type)
+    )
     .map((type) => ({
       name: type,
       multiplier: 2,
@@ -102,7 +153,9 @@ function calculateBattleProfile(typeData) {
   };
 }
 
-function formatMultiplier(multiplier) {
+function formatMultiplier(
+  multiplier: number
+): string {
   return `×${multiplier}`;
 }
 
@@ -112,9 +165,11 @@ function BattleGroup({
   items,
   className,
   emptyText,
-}) {
+}: BattleGroupProps) {
   return (
-    <div className={`battle-group ${className}`}>
+    <div
+      className={`battle-group ${className}`}
+    >
       <div className="battle-group-heading">
         <span>{title}</span>
         <span>{code}</span>
@@ -132,7 +187,9 @@ function BattleGroup({
               </span>
 
               <span className="battle-multiplier">
-                {formatMultiplier(item.multiplier)}
+                {formatMultiplier(
+                  item.multiplier
+                )}
               </span>
             </div>
           ))}
@@ -146,23 +203,33 @@ function BattleGroup({
   );
 }
 
-export default function BattleProfile({ types }) {
-  const typeUrls = types.map((item) => item.type.url);
-  const requestKey = typeUrls.join("|");
+export default function BattleProfile({
+  types,
+}: BattleProfileProps) {
+  const typeUrls = types.map(
+    (item) => item.type.url
+  );
 
-  const [battleState, setBattleState] = useState({
-    key: "",
-    data: null,
-    error: null,
-  });
+  const requestKey =
+    typeUrls.join("|");
+
+  const [battleState, setBattleState] =
+    useState<BattleState>({
+      key: "",
+      data: null,
+      error: null,
+    });
 
   useEffect(() => {
     if (!requestKey) {
       return;
     }
 
-    const controller = new AbortController();
-    const urls = requestKey.split("|");
+    const controller =
+      new AbortController();
+
+    const urls =
+      requestKey.split("|");
 
     Promise.all(
       urls.map((url) =>
@@ -175,34 +242,47 @@ export default function BattleProfile({ types }) {
             );
           }
 
-          return response.json();
+          return response.json() as Promise<PokemonTypeApiResponse>;
         })
       )
     )
       .then((typeData) => {
-        if (controller.signal.aborted) {
+        if (
+          controller.signal.aborted
+        ) {
           return;
         }
 
         setBattleState({
           key: requestKey,
-          data: calculateBattleProfile(typeData),
+          data:
+            calculateBattleProfile(
+              typeData
+            ),
           error: null,
         });
       })
-      .catch((error) => {
-        if (controller.signal.aborted) {
+      .catch((error: unknown) => {
+        if (
+          controller.signal.aborted
+        ) {
           return;
         }
+
+        const message =
+          error instanceof Error
+            ? error.message
+            : "Unknown error";
 
         setBattleState({
           key: requestKey,
           data: null,
-          error: error.message,
+          error: message,
         });
       });
 
-    return () => controller.abort();
+    return () =>
+      controller.abort();
   }, [requestKey]);
 
   const isCurrentResult =
@@ -226,7 +306,9 @@ export default function BattleProfile({ types }) {
               className="section-heading"
             >
               Battle profile
-              <span>CALCULATING MATCHUPS</span>
+              <span>
+                CALCULATING MATCHUPS
+              </span>
             </h4>
 
             <p>
