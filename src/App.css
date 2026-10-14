@@ -2076,3 +2076,405 @@ h1 span {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* =========================================
+   BATTLE PROFILE
+   ========================================= */
+
+.battle-profile {
+  border-top: 1px solid #334650;
+
+  margin-top: 20px;
+  padding-top: 18px;
+
+  margin-bottom: 22px;
+}
+
+.battle-profile-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      2,
+      minmax(0, 1fr)
+    );
+
+  gap: 10px;
+}
+
+.battle-group {
+  min-width: 0;
+
+  padding: 12px;
+
+  border: 1px solid #344b58;
+
+  border-radius: 8px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #1d303b,
+      #182a34
+    );
+}
+
+.battle-group-heading {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 8px;
+
+  padding-bottom: 8px;
+
+  margin-bottom: 9px;
+
+  border-bottom:
+    1px solid #314651;
+
+  font:
+    700 9px/1.4 Consolas,
+    "Courier New",
+    monospace;
+
+  letter-spacing: 0.8px;
+
+  text-transform: uppercase;
+}
+
+.battle-group-heading span:last-child {
+  padding: 2px 5px;
+
+  border-radius: 3px;
+
+  font-size: 7px;
+
+  letter-spacing: 0.7px;
+}
+
+
+/* Strong */
+
+.battle-strong
+  .battle-group-heading {
+  color: #91e0bc;
+}
+
+.battle-strong
+  .battle-group-heading
+  span:last-child {
+  border:
+    1px solid
+    rgba(
+      145,
+      224,
+      188,
+      0.3
+    );
+
+  background:
+    rgba(
+      145,
+      224,
+      188,
+      0.07
+    );
+}
+
+
+/* Weak */
+
+.battle-weak
+  .battle-group-heading {
+  color: #f2a08c;
+}
+
+.battle-weak
+  .battle-group-heading
+  span:last-child {
+  border:
+    1px solid
+    rgba(
+      242,
+      160,
+      140,
+      0.3
+    );
+
+  background:
+    rgba(
+      242,
+      160,
+      140,
+      0.07
+    );
+}
+
+
+/* Resistance */
+
+.battle-resist
+  .battle-group-heading {
+  color: #8fcbd7;
+}
+
+.battle-resist
+  .battle-group-heading
+  span:last-child {
+  border:
+    1px solid
+    rgba(
+      143,
+      203,
+      215,
+      0.3
+    );
+
+  background:
+    rgba(
+      143,
+      203,
+      215,
+      0.07
+    );
+}
+
+
+/* Immunity */
+
+.battle-immune
+  .battle-group-heading {
+  color: #b8a9df;
+}
+
+.battle-immune
+  .battle-group-heading
+  span:last-child {
+  border:
+    1px solid
+    rgba(
+      184,
+      169,
+      223,
+      0.3
+    );
+
+  background:
+    rgba(
+      184,
+      169,
+      223,
+      0.07
+    );
+}
+
+
+.battle-type-list {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 6px;
+}
+
+.battle-type-chip {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 8px;
+
+  min-width: 0;
+
+  padding: 7px 8px;
+
+  border:
+    1px solid
+    color-mix(
+      in srgb,
+      var(--type-color) 42%,
+      #344a58
+    );
+
+  border-radius: 5px;
+
+  background:
+    color-mix(
+      in srgb,
+      var(--type-color) 9%,
+      #1b2d37
+    );
+}
+
+.battle-type-name {
+  min-width: 0;
+
+  color: #e7eff2;
+
+  font-size: 10px;
+  font-weight: 600;
+
+  text-transform: capitalize;
+
+  overflow-wrap: anywhere;
+}
+
+.battle-multiplier {
+  flex-shrink: 0;
+
+  min-width: 31px;
+
+  padding: 2px 4px;
+
+  border-radius: 3px;
+
+  background:
+    rgba(
+      255,
+      255,
+      255,
+      0.05
+    );
+
+  color: #eef6f8;
+
+  font:
+    700 9px/1.3 Consolas,
+    monospace;
+
+  text-align: center;
+}
+
+.battle-weak
+  .battle-multiplier {
+  color: #ffc0af;
+}
+
+.battle-resist
+  .battle-multiplier {
+  color: #a6e1eb;
+}
+
+.battle-immune
+  .battle-multiplier {
+  color: #cfc2f1;
+}
+
+.battle-strong
+  .battle-multiplier {
+  color: #a8e9c9;
+}
+
+.battle-empty {
+  margin: 0;
+
+  padding: 7px 2px;
+
+  color: #788f9b;
+
+  font:
+    9px/1.5 Consolas,
+    monospace;
+}
+
+.battle-profile-note {
+  margin:
+    12px 0 0;
+
+  padding-left: 9px;
+
+  border-left:
+    2px solid #405d69;
+
+  color: #879faa;
+
+  font:
+    8px/1.6 Consolas,
+    "Courier New",
+    monospace;
+}
+
+.battle-profile-message {
+  min-height: 80px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 10px 0;
+}
+
+.battle-profile-message
+  .section-heading {
+  margin-bottom: 4px;
+}
+
+.battle-profile-message p {
+  margin: 0;
+
+  color: #8fa8b3;
+
+  font-size: 10px;
+}
+
+.battle-mini-loader {
+  width: 31px;
+  height: 31px;
+
+  flex-shrink: 0;
+
+  border:
+    2px solid #344e5a;
+
+  border-top-color: #76d6e2;
+
+  border-radius: 50%;
+
+  animation:
+    scan 0.9s linear infinite;
+}
+
+.battle-profile-error {
+  margin: 0;
+
+  padding: 11px;
+
+  border:
+    1px solid
+    rgba(
+      239,
+      173,
+      149,
+      0.25
+    );
+
+  border-radius: 6px;
+
+  background:
+    rgba(
+      239,
+      173,
+      149,
+      0.05
+    );
+
+  color: #efad95;
+
+  font-size: 10px;
+  line-height: 1.6;
+}
+
+
+/* Battle profile responsive */
+
+@media (max-width: 500px) {
+  .battle-profile-grid {
+    grid-template-columns:
+      minmax(0, 1fr);
+  }
+}

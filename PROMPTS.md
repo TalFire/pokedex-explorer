@@ -90,3 +90,27 @@ Added a random selection function that reuses the existing selectedPokemon state
 
 I checked:
 Tested repeated random selections, verified that the selected Pokémon and full details update correctly, and confirmed that an active search is cleared when Random Scan is used.
+
+---
+
+## Enhancement — Pokémon of the Day
+Prompt:
+Help me add a Pokémon of the Day feature that displays the same Pokémon for the entire calendar day and changes automatically on a new day.
+
+Agent did:
+Added a deterministic daily Pokémon calculation based on the current date and integrated it into the Pokédex discovery panel.
+
+I checked:
+Verified that the same Pokémon remains after refresh, opens correctly in the scanner, clears an active search, and displays correctly in the responsive Pokédex UI.
+
+---
+
+## Enhancement — Battle Profile
+Prompt:
+Help me add a Battle Profile that calculates Pokémon strengths, weaknesses, resistances, and immunities from PokéAPI type data.
+
+Agent did:
+Added a BattleProfile component that fetches type damage relations and calculates combined defensive multipliers for dual-type Pokémon, as well as offensive type advantages.
+
+I checked:
+Tested single-type and dual-type Pokémon, verified ×2 and combined multipliers such as ×4 and ×0.5, confirmed Random Scan and Pokémon of the Day update the profile correctly, and verified the project builds and lints successfully.
