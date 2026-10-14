@@ -20,8 +20,14 @@ export default function App() {
       .then((data) => {
         const pokemonList = data.results.map((item) => {
           const id = Number(item.url.split("/").filter(Boolean).pop());
-          return { id: id, name: item.name, url: item.url };
+
+          return {
+            id: id,
+            name: item.name,
+            url: item.url,
+          };
         });
+
         setPokemon(pokemonList);
         setLoading(false);
       })
@@ -35,6 +41,29 @@ export default function App() {
     item.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  function handleRandomPokemon() {
+    if (pokemon.length === 0) {
+      return;
+    }
+
+    const availablePokemon = selectedPokemon
+      ? pokemon.filter((item) => item.id !== selectedPokemon.id)
+      : pokemon;
+
+    if (availablePokemon.length === 0) {
+      return;
+    }
+
+    const randomIndex = Math.floor(
+      Math.random() * availablePokemon.length
+    );
+
+    const randomPokemon = availablePokemon[randomIndex];
+
+    setSearchTerm("");
+    setSelectedPokemon(randomPokemon);
+  }
+
   return (
     <div className="app">
       <header className="app-header">
@@ -44,45 +73,107 @@ export default function App() {
           <span className="indicator light-yellow" />
           <span className="indicator light-green" />
         </div>
+
         <div className="header-title">
           <p className="eyebrow">Your field companion</p>
-          <h1>Pokédex <span>Explorer</span></h1>
+          <h1>
+            Pokédex <span>Explorer</span>
+          </h1>
         </div>
+
         <div className="system-label">
           <span className="status-dot" /> Pokédex system
-          <span className="system-version">NATIONAL DATABASE / V1.0</span>
+          <span className="system-version">
+            NATIONAL DATABASE / V1.1
+          </span>
         </div>
       </header>
 
       <main className="pokedex-layout">
-        <section className="pokemon-list-panel" aria-labelledby="database-heading">
+        <section
+          className="pokemon-list-panel"
+          aria-labelledby="database-heading"
+        >
           <div className="panel-heading">
             <div>
               <p className="eyebrow">01 / Discovery</p>
               <h2 id="database-heading">Pokémon database</h2>
             </div>
-            <span className="panel-symbol" aria-hidden="true">≡</span>
-          </div>
-          <p className="panel-description">Find a Pokémon. Start exploring.</p>
-          <SearchBar searchTerm={searchTerm} onSearch={setSearchTerm} />
-          <div className="list-caption">
-            <span>DATABASE ENTRIES</span>
-            <span role="status">
-              {loading ? "CONNECTING" : error ? "OFFLINE" : `${filteredPokemon.length} / ${pokemon.length}`}
+
+            <span className="panel-symbol" aria-hidden="true">
+              ≡
             </span>
           </div>
+
+          <p className="panel-description">
+            Find a Pokémon. Start exploring.
+          </p>
+
+          <div className="database-actions">
+            <button
+              type="button"
+              className="random-pokemon-button"
+              onClick={handleRandomPokemon}
+              disabled={loading || Boolean(error) || pokemon.length === 0}
+            >
+              <span
+                className="random-button-icon"
+                aria-hidden="true"
+              >
+                ⟳
+              </span>
+
+              Random scan
+            </button>
+          </div>
+
+          <SearchBar
+            searchTerm={searchTerm}
+            onSearch={setSearchTerm}
+          />
+
+          <div className="list-caption">
+            <span>DATABASE ENTRIES</span>
+
+            <span role="status">
+              {loading
+                ? "CONNECTING"
+                : error
+                  ? "OFFLINE"
+                  : `${filteredPokemon.length} / ${pokemon.length}`}
+            </span>
+          </div>
+
           {loading ? (
             <div className="database-message" role="status">
-              <span className="scanner-loader" aria-hidden="true" />
+              <span
+                className="scanner-loader"
+                aria-hidden="true"
+              />
+
               <h3>Scanning database…</h3>
               <p>Connecting to the Pokémon world.</p>
             </div>
           ) : error ? (
-            <div className="database-message error-message" role="alert">
-              <span className="signal-icon" aria-hidden="true">!</span>
+            <div
+              className="database-message error-message"
+              role="alert"
+            >
+              <span
+                className="signal-icon"
+                aria-hidden="true"
+              >
+                !
+              </span>
+
               <h3>Connection error</h3>
-              <p>Unable to reach the Pokédex database.</p>
+
+              <p>
+                Unable to reach the Pokédex database.
+              </p>
+
               <p className="error-detail">{error}</p>
+
               <p>Refresh the page to reconnect.</p>
             </div>
           ) : (
@@ -92,10 +183,18 @@ export default function App() {
               onSelect={setSelectedPokemon}
             />
           )}
-          <div className={`list-footer${error ? " offline" : ""}`}>
+
+          <div
+            className={`list-footer${error ? " offline" : ""}`}
+          >
             <span className="status-dot" />
+
             <span>
-              {loading ? "Establishing connection" : error ? "Database offline" : "PokéAPI connection established"}
+              {loading
+                ? "Establishing connection"
+                : error
+                  ? "Database offline"
+                  : "PokéAPI connection established"}
             </span>
           </div>
         </section>
@@ -111,17 +210,29 @@ export default function App() {
               <p className="eyebrow">02 / Field research</p>
               <h2 id="scanner-heading">Pokémon scanner</h2>
             </div>
+
             <span className="scanner-status">
-              {selectedPokemon ? "TARGET SELECTED" : "STANDBY"}
+              {selectedPokemon
+                ? "TARGET SELECTED"
+                : "STANDBY"}
             </span>
           </div>
+
           <PokemonDetails pokemon={selectedPokemon} />
         </section>
       </main>
+
       <footer className="device-footer">
-        <span className="speaker-grille" aria-hidden="true" />
+        <span
+          className="speaker-grille"
+          aria-hidden="true"
+        />
+
         <p>Discover. Scan. Explore.</p>
-        <span className="footer-credit">Powered by PokéAPI</span>
+
+        <span className="footer-credit">
+          Powered by PokéAPI
+        </span>
       </footer>
     </div>
   );

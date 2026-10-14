@@ -78,3 +78,15 @@ Created a responsive Pokédex-style interface, added PokemonListItem, type color
 
 I checked:
 Verified the redesigned interface, Pokémon selection, search, responsive layout, and the main Pokémon details. The project builds successfully with no lint errors.
+
+---
+
+## Enhancement — Random Pokémon
+Prompt:
+Help me add a Random Scan feature that selects a random Pokémon while preserving the existing Pokédex architecture and UI.
+
+Agent did:
+Added a random selection function that reuses the existing selectedPokemon state and integrated a Random Scan button into the Pokédex interface.
+
+I checked:
+Tested repeated random selections, verified that the selected Pokémon and full details update correctly, and confirmed that an active search is cleared when Random Scan is used.
