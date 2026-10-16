@@ -70,7 +70,7 @@ export default function App() {
 
   useEffect(() => {
     fetch(
-      "https://pokeapi.co/api/v2/pokemon?limit=60"
+      "https://pokeapi.co/api/v2/pokemon-species?limit=2000"
     )
       .then((response) => {
         if (!response.ok) {
@@ -84,13 +84,19 @@ export default function App() {
       .then((data) => {
         const pokemonList:
           PokemonSummary[] =
-          data.results.map((item) => ({
-            id: getPokemonIdFromUrl(
-              item.url
-            ),
-            name: item.name,
-            url: item.url,
-          }));
+          data.results.map((item) => {
+            const id =
+              getPokemonIdFromUrl(
+                item.url
+              );
+
+            return {
+              id,
+              name: item.name,
+
+              url: `https://pokeapi.co/api/v2/pokemon/${id}/`,
+            };
+          });
 
         setPokemon(pokemonList);
         setLoading(false);
@@ -119,7 +125,9 @@ export default function App() {
 
   const routePokemonId =
     pokemonRouteMatch
-      ? Number(pokemonRouteMatch[1])
+      ? Number(
+          pokemonRouteMatch[1]
+        )
       : null;
 
   const routePokemon =
@@ -195,8 +203,11 @@ export default function App() {
           aria-hidden="true"
         >
           <span className="sensor-lens" />
+
           <span className="indicator light-red" />
+
           <span className="indicator light-yellow" />
+
           <span className="indicator light-green" />
         </div>
 

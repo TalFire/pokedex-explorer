@@ -41,6 +41,8 @@ export interface PokemonDetailsData {
   height: number;
   weight: number;
 
+  species: NamedApiResource;
+
   sprites: {
     front_default: string | null;
 
@@ -68,4 +70,34 @@ export interface PokemonTypeDamageRelations {
 
 export interface PokemonTypeApiResponse {
   damage_relations: PokemonTypeDamageRelations;
+}
+
+export interface PokemonSpeciesApiResponse {
+  evolution_chain: {
+    url: string;
+  };
+}
+
+export interface EvolutionDetail {
+  min_level: number | null;
+  min_happiness: number | null;
+
+  trigger: NamedApiResource;
+
+  item: NamedApiResource | null;
+  held_item: NamedApiResource | null;
+
+  time_of_day: string;
+}
+
+export interface EvolutionChainNode {
+  species: NamedApiResource;
+
+  evolution_details: EvolutionDetail[];
+
+  evolves_to: EvolutionChainNode[];
+}
+
+export interface EvolutionChainApiResponse {
+  chain: EvolutionChainNode;
 }

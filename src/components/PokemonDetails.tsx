@@ -1,36 +1,54 @@
-﻿import { useEffect, useState } from "react";
+﻿import {
+  useEffect,
+  useState,
+} from "react";
+
 import BattleProfile from "./BattleProfile";
+import EvolutionChain from "./EvolutionChain";
 
 import type {
   PokemonDetailsData,
   PokemonSummary,
 } from "../types/pokemon";
 
-const statLabels: Record<string, string> = {
+const statLabels: Record<
+  string,
+  string
+> = {
   hp: "HP",
   attack: "Attack",
   defense: "Defense",
-  "special-attack": "Special Attack",
-  "special-defense": "Special Defense",
+  "special-attack":
+    "Special Attack",
+  "special-defense":
+    "Special Defense",
   speed: "Speed",
 };
 
 interface PokemonDetailsProps {
-  pokemon: PokemonSummary | null;
+  pokemon:
+    | PokemonSummary
+    | null;
 }
 
 interface DetailsRequestState {
   url: string | null;
-  details: PokemonDetailsData | null;
+  details:
+    | PokemonDetailsData
+    | null;
   error: string | null;
 }
 
 export default function PokemonDetails({
   pokemon,
 }: PokemonDetailsProps) {
-  const pokemonUrl = pokemon?.url ?? null;
+  const pokemonUrl =
+    pokemon?.url ?? null;
 
-  const [requestState, setRequestState] =
+  const [
+    requestState,
+    setRequestState,
+  ] =
     useState<DetailsRequestState>({
       url: null,
       details: null,
@@ -42,7 +60,8 @@ export default function PokemonDetails({
       return;
     }
 
-    const controller = new AbortController();
+    const controller =
+      new AbortController();
 
     fetch(pokemonUrl, {
       signal: controller.signal,
@@ -57,7 +76,9 @@ export default function PokemonDetails({
         return response.json() as Promise<PokemonDetailsData>;
       })
       .then((data) => {
-        if (controller.signal.aborted) {
+        if (
+          controller.signal.aborted
+        ) {
           return;
         }
 
@@ -67,24 +88,29 @@ export default function PokemonDetails({
           error: null,
         });
       })
-      .catch((error: unknown) => {
-        if (controller.signal.aborted) {
-          return;
+      .catch(
+        (error: unknown) => {
+          if (
+            controller.signal.aborted
+          ) {
+            return;
+          }
+
+          const message =
+            error instanceof Error
+              ? error.message
+              : "Unknown error";
+
+          setRequestState({
+            url: pokemonUrl,
+            details: null,
+            error: message,
+          });
         }
+      );
 
-        const message =
-          error instanceof Error
-            ? error.message
-            : "Unknown error";
-
-        setRequestState({
-          url: pokemonUrl,
-          details: null,
-          error: message,
-        });
-      });
-
-    return () => controller.abort();
+    return () =>
+      controller.abort();
   }, [pokemonUrl]);
 
   if (!pokemon) {
@@ -101,24 +127,29 @@ export default function PokemonDetails({
           Awaiting discovery
         </span>
 
-        <h3>Pokédex ready</h3>
+        <h3>
+          Pokédex ready
+        </h3>
 
         <p>
-          Select a Pokémon from the database
+          Select a Pokémon from the
+          database
           <br />
           to begin scanning.
         </p>
 
         <span className="idle-hint">
           <span className="status-dot" />
-          Scanner online · Ready to explore
+          Scanner online · Ready to
+          explore
         </span>
       </div>
     );
   }
 
   const isCurrentRequest =
-    requestState.url === pokemonUrl;
+    requestState.url ===
+    pokemonUrl;
 
   if (!isCurrentRequest) {
     return (
@@ -133,10 +164,14 @@ export default function PokemonDetails({
 
         <span className="eyebrow">
           Target #
-          {String(pokemon.id).padStart(3, "0")}
+          {String(
+            pokemon.id
+          ).padStart(3, "0")}
         </span>
 
-        <h3>Analyzing Pokémon…</h3>
+        <h3>
+          Analyzing Pokémon…
+        </h3>
 
         <p>
           Reading the profile for{" "}
@@ -162,11 +197,13 @@ export default function PokemonDetails({
           !
         </span>
 
-        <h3>Scan interrupted</h3>
+        <h3>
+          Scan interrupted
+        </h3>
 
         <p>
-          Unable to retrieve this Pokémon&apos;s
-          profile.
+          Unable to retrieve this
+          Pokémon&apos;s profile.
         </p>
 
         <p className="error-detail">
@@ -174,13 +211,15 @@ export default function PokemonDetails({
         </p>
 
         <p>
-          Select another Pokémon, then return to retry.
+          Select another Pokémon, then
+          return to retry.
         </p>
       </div>
     );
   }
 
-  const details = requestState.details;
+  const details =
+    requestState.details;
 
   if (!details) {
     return (
@@ -193,14 +232,17 @@ export default function PokemonDetails({
           aria-hidden="true"
         />
 
-        <h3>Analyzing Pokémon…</h3>
+        <h3>
+          Analyzing Pokémon…
+        </h3>
       </div>
     );
   }
 
   const artwork =
-    details.sprites.other?.["official-artwork"]
-      ?.front_default ??
+    details.sprites.other?.[
+      "official-artwork"
+    ]?.front_default ??
     details.sprites.front_default;
 
   return (
@@ -212,11 +254,16 @@ export default function PokemonDetails({
         <div>
           <p className="details-id">
             ENTRY #
-            {String(details.id).padStart(3, "0")}
+            {String(
+              details.id
+            ).padStart(3, "0")}
           </p>
 
           <h3>
-            {details.name.replaceAll("-", " ")}
+            {details.name.replaceAll(
+              "-",
+              " "
+            )}
           </h3>
         </div>
 
@@ -243,7 +290,9 @@ export default function PokemonDetails({
             alt={`Official artwork of ${details.name}`}
           />
         ) : (
-          <p>Artwork unavailable</p>
+          <p>
+            Artwork unavailable
+          </p>
         )}
 
         <span
@@ -251,7 +300,9 @@ export default function PokemonDetails({
           aria-hidden="true"
         >
           SCAN /{" "}
-          {String(details.id).padStart(3, "0")}
+          {String(
+            details.id
+          ).padStart(3, "0")}
         </span>
       </div>
 
@@ -259,14 +310,18 @@ export default function PokemonDetails({
         className="pokemon-types"
         aria-label="Pokémon types"
       >
-        {details.types.map((item) => (
-          <span
-            className={`type-badge type-${item.type.name}`}
-            key={item.type.name}
-          >
-            {item.type.name}
-          </span>
-        ))}
+        {details.types.map(
+          (item) => (
+            <span
+              className={`type-badge type-${item.type.name}`}
+              key={
+                item.type.name
+              }
+            >
+              {item.type.name}
+            </span>
+          )
+        )}
       </div>
 
       <section
@@ -278,24 +333,34 @@ export default function PokemonDetails({
           className="section-heading"
         >
           About
-          <span>SPECIMEN DATA</span>
+          <span>
+            SPECIMEN DATA
+          </span>
         </h4>
 
         <dl className="measurements">
           <div>
-            <dt>Height</dt>
+            <dt>
+              Height
+            </dt>
 
             <dd>
-              {(details.height / 10).toFixed(1)}
+              {(
+                details.height / 10
+              ).toFixed(1)}
               <span> m</span>
             </dd>
           </div>
 
           <div>
-            <dt>Weight</dt>
+            <dt>
+              Weight
+            </dt>
 
             <dd>
-              {(details.weight / 10).toFixed(1)}
+              {(
+                details.weight / 10
+              ).toFixed(1)}
               <span> kg</span>
             </dd>
           </div>
@@ -314,24 +379,38 @@ export default function PokemonDetails({
         </h4>
 
         <ul className="ability-chips">
-          {details.abilities.map((item) => (
-            <li key={item.ability.name}>
-              {item.ability.name.replaceAll(
-                "-",
-                " "
-              )}
+          {details.abilities.map(
+            (item) => (
+              <li
+                key={
+                  item.ability.name
+                }
+              >
+                {item.ability.name.replaceAll(
+                  "-",
+                  " "
+                )}
 
-              {item.is_hidden && (
-                <span className="hidden-label">
-                  Hidden
-                </span>
-              )}
-            </li>
-          ))}
+                {item.is_hidden && (
+                  <span className="hidden-label">
+                    Hidden
+                  </span>
+                )}
+              </li>
+            )
+          )}
         </ul>
       </section>
 
-      <BattleProfile types={details.types} />
+      <BattleProfile
+        types={details.types}
+      />
+
+      <EvolutionChain
+        speciesUrl={
+          details.species.url
+        }
+      />
 
       <section
         className="stats-section"
@@ -342,39 +421,54 @@ export default function PokemonDetails({
           className="section-heading"
         >
           Base stats
-          <span>0–255 SCALE</span>
+          <span>
+            0–255 SCALE
+          </span>
         </h4>
 
         <ul className="stat-list">
-          {details.stats.map((item) => (
-            <li
-              className={`stat-row stat-${item.stat.name}`}
-              key={item.stat.name}
-            >
-              <span className="stat-label">
-                {statLabels[item.stat.name] ??
-                  item.stat.name}
-              </span>
-
-              <span className="stat-value">
-                {item.base_stat}
-              </span>
-
-              <meter
-                min="0"
-                max="255"
-                value={item.base_stat}
-                aria-label={`${
-                  statLabels[item.stat.name] ??
+          {details.stats.map(
+            (item) => (
+              <li
+                className={`stat-row stat-${item.stat.name}`}
+                key={
                   item.stat.name
-                }: ${item.base_stat} out of 255`}
-              />
-            </li>
-          ))}
+                }
+              >
+                <span className="stat-label">
+                  {statLabels[
+                    item.stat.name
+                  ] ??
+                    item.stat.name}
+                </span>
+
+                <span className="stat-value">
+                  {item.base_stat}
+                </span>
+
+                <meter
+                  min="0"
+                  max="255"
+                  value={
+                    item.base_stat
+                  }
+                  aria-label={`${
+                    statLabels[
+                      item.stat.name
+                    ] ??
+                    item.stat.name
+                  }: ${
+                    item.base_stat
+                  } out of 255`}
+                />
+              </li>
+            )
+          )}
         </ul>
 
         <p className="stat-note">
-          Base values, not percentages. Each bar uses
+          Base values, not
+          percentages. Each bar uses
           the same 255-point scale.
         </p>
       </section>

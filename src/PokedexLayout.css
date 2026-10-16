@@ -1,0 +1,251 @@
+/*
+  Desktop Pokédex layout improvements
+
+  The two main Pokédex screens use the
+  available viewport height and scroll
+  independently.
+
+  Mobile keeps the normal document flow.
+*/
+
+@media (min-width: 761px) {
+  .pokedex-layout {
+    height: clamp(
+      480px,
+      calc(100vh - 185px),
+      820px
+    );
+
+    min-height: 0;
+
+    align-items: stretch;
+  }
+
+  .pokemon-list-panel,
+  .pokemon-details-panel {
+    height: 100%;
+    min-height: 0;
+  }
+
+  /*
+    LEFT SCREEN
+
+    The tools stay visible and the actual
+    Pokémon list receives the remaining
+    space.
+  */
+
+  .pokemon-list-panel {
+    display: flex;
+    flex-direction: column;
+
+    overflow: hidden;
+  }
+
+  .pokemon-list-panel
+    > .panel-heading,
+  .pokemon-list-panel
+    > .panel-description,
+  .pokemon-list-panel
+    > .discovery-tools,
+  .pokemon-list-panel
+    > .search-bar,
+  .pokemon-list-panel
+    > .list-caption,
+  .pokemon-list-panel
+    > .list-footer {
+    flex: 0 0 auto;
+  }
+
+  .pokemon-list-panel
+    > .pokemon-list {
+    flex: 1 1 auto;
+
+    min-height: 180px;
+    max-height: none;
+
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .pokemon-list-panel
+    > .database-message {
+    flex: 1 1 auto;
+
+    min-height: 180px;
+  }
+
+  /*
+    RIGHT SCREEN
+
+    Pokémon details can become long,
+    especially with battle information
+    and evolution data. The details screen
+    scrolls instead of making the complete
+    Pokédex shell several screens tall.
+  */
+
+  .pokemon-details-panel {
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
+  }
+
+  /*
+    Slight scrollbar styling so both
+    screens still feel like part of the
+    Pokédex device.
+  */
+
+  .pokemon-list-panel
+    > .pokemon-list::-webkit-scrollbar,
+  .pokemon-details-panel::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .pokemon-list-panel
+    > .pokemon-list::-webkit-scrollbar-track,
+  .pokemon-details-panel::-webkit-scrollbar-track {
+    background: rgba(
+      7,
+      24,
+      32,
+      0.45
+    );
+  }
+
+  .pokemon-list-panel
+    > .pokemon-list::-webkit-scrollbar-thumb,
+  .pokemon-details-panel::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+
+    background: #527482;
+  }
+
+  .pokemon-list-panel
+    > .pokemon-list::-webkit-scrollbar-thumb:hover,
+  .pokemon-details-panel::-webkit-scrollbar-thumb:hover {
+    background: #6b98a8;
+  }
+}
+
+
+/*
+  Clickable evolution cards
+*/
+
+button.evolution-pokemon-card {
+  appearance: none;
+
+  font: inherit;
+  text-align: left;
+
+  color: inherit;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+button.evolution-pokemon-card:hover {
+  border-color: #70cbd6;
+
+  background:
+    linear-gradient(
+      135deg,
+      #284650,
+      #1c333d
+    );
+
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    0 5px 14px
+      rgba(
+        0,
+        0,
+        0,
+        0.18
+      ),
+    0 0 0 1px
+      rgba(
+        112,
+        203,
+        214,
+        0.08
+      );
+}
+
+button.evolution-pokemon-card:focus-visible {
+  outline:
+    2px solid
+    #7ce1ed;
+
+  outline-offset: 3px;
+}
+
+button.evolution-pokemon-card:active {
+  transform:
+    translateY(0);
+}
+
+button.evolution-pokemon-card:disabled {
+  cursor: default;
+}
+
+.evolution-open-label {
+  margin-top: 3px;
+
+  color: #74cbd5;
+
+  font:
+    7px/1.4 Consolas,
+    "Courier New",
+    monospace;
+
+  letter-spacing: 0.7px;
+
+  text-transform: uppercase;
+
+  opacity: 0;
+
+  transform:
+    translateX(-4px);
+
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+}
+
+button.evolution-pokemon-card:hover
+  .evolution-open-label,
+button.evolution-pokemon-card:focus-visible
+  .evolution-open-label {
+  opacity: 1;
+
+  transform:
+    translateX(0);
+}
+
+
+/*
+  On smaller screens we intentionally
+  keep the normal page flow.
+
+  Independent desktop screen scrolling
+  would be uncomfortable on mobile.
+*/
+
+@media (max-width: 760px) {
+  .evolution-open-label {
+    opacity: 1;
+    transform: none;
+  }
+}
