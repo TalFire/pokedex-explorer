@@ -2478,3 +2478,445 @@ h1 span {
       minmax(0, 1fr);
   }
 }
+
+/* =========================================
+   ROUTER NAVIGATION
+   ========================================= */
+
+.pokedex-nav {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+
+  margin: -7px 7px 20px;
+  padding: 7px;
+
+  border: 1px solid #92323c;
+  border-radius: 9px;
+
+  background: #9f2c37;
+}
+
+.pokedex-nav a {
+  padding: 7px 12px;
+
+  border: 1px solid transparent;
+  border-radius: 5px;
+
+  color: #f2c8c5;
+
+  font:
+    700 9px/1.4 Consolas,
+    "Courier New",
+    monospace;
+
+  letter-spacing: 1px;
+  text-transform: uppercase;
+
+  text-decoration: none;
+
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    color 0.15s;
+}
+
+.pokedex-nav a:hover {
+  border-color: #dd706d;
+  color: #fff5f1;
+}
+
+.pokedex-nav a.active {
+  border-color: #7ce1ed;
+
+  background: #162f39;
+
+  color: #8fe7ef;
+
+  box-shadow:
+    0 0 10px #7ce1ed14;
+}
+
+
+/* =========================================
+   FEATURE PAGES
+   ========================================= */
+
+.feature-page {
+  padding-top: 24px;
+}
+
+.feature-page-header {
+  margin-bottom: 24px;
+}
+
+.feature-page-header h3 {
+  margin: 4px 0 9px;
+
+  color: #edf5f7;
+
+  font-size: 28px;
+}
+
+.feature-page-header > p:last-child {
+  max-width: 520px;
+
+  margin: 0;
+
+  color: #9fb3bd;
+
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.feature-display {
+  display: grid;
+
+  grid-template-columns:
+    190px minmax(0, 1fr);
+
+  align-items: center;
+
+  gap: 26px;
+
+  padding: 20px;
+
+  border: 1px solid #3c5662;
+  border-radius: 10px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #203640,
+      #172a34
+    );
+}
+
+.daily-feature-display {
+  border-color: #766742;
+
+  background:
+    radial-gradient(
+      circle at 18% 50%,
+      rgba(240, 203, 113, 0.11),
+      transparent 28%
+    ),
+    linear-gradient(
+      145deg,
+      #203640,
+      #172a34
+    );
+}
+
+.discover-feature-display {
+  border-color: #47727c;
+
+  background:
+    radial-gradient(
+      circle at 18% 50%,
+      rgba(124, 225, 237, 0.12),
+      transparent 28%
+    ),
+    linear-gradient(
+      145deg,
+      #203640,
+      #172a34
+    );
+}
+
+.feature-art {
+  position: relative;
+
+  min-height: 180px;
+
+  display: grid;
+  place-items: center;
+
+  overflow: hidden;
+
+  border: 1px solid #3e5965;
+  border-radius: 9px;
+
+  background:
+    radial-gradient(
+      circle,
+      #5fadb51c,
+      #10212a 70%
+    );
+}
+
+.feature-art::before,
+.feature-art::after {
+  content: "";
+
+  position: absolute;
+
+  background: #7ac3cd17;
+}
+
+.feature-art::before {
+  width: 100%;
+  height: 1px;
+
+  left: 0;
+  top: 50%;
+}
+
+.feature-art::after {
+  width: 1px;
+  height: 100%;
+
+  left: 50%;
+  top: 0;
+}
+
+.feature-scan-ring {
+  position: absolute;
+
+  width: 125px;
+  height: 125px;
+
+  border: 1px solid #73c3ce2b;
+  border-radius: 50%;
+
+  box-shadow:
+    0 0 0 17px #73c3ce08;
+}
+
+.feature-art img {
+  position: relative;
+
+  z-index: 1;
+
+  width: 150px;
+  height: 150px;
+
+  object-fit: contain;
+
+  image-rendering: pixelated;
+
+  filter:
+    drop-shadow(0 8px 7px #0005);
+}
+
+.feature-info {
+  min-width: 0;
+}
+
+.feature-kicker {
+  display: block;
+
+  margin-bottom: 13px;
+
+  color: #8dd9e2;
+
+  font:
+    8px/1.4 Consolas,
+    monospace;
+
+  letter-spacing: 1.2px;
+}
+
+.daily-page .feature-kicker {
+  color: #ebcb7e;
+}
+
+.feature-id {
+  display: block;
+
+  color: #8da6b2;
+
+  font:
+    10px Consolas,
+    monospace;
+
+  letter-spacing: 1px;
+}
+
+.feature-info h4 {
+  margin: 4px 0 9px;
+
+  color: #f0f6f8;
+
+  font-size: 30px;
+
+  text-transform: capitalize;
+}
+
+.feature-info p {
+  margin: 0;
+
+  color: #99afba;
+
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.feature-actions {
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 10px;
+
+  margin-top: 18px;
+}
+
+.feature-primary-button,
+.feature-secondary-button {
+  min-height: 39px;
+
+  padding: 8px 14px;
+
+  border-radius: 6px;
+
+  font:
+    700 9px/1.4 Consolas,
+    monospace;
+
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+
+  cursor: pointer;
+}
+
+.feature-primary-button {
+  border: 1px solid #62b8c4;
+
+  background: #22444e;
+
+  color: #bdebf0;
+}
+
+.feature-primary-button:hover {
+  border-color: #7ce1ed;
+  background: #2a505a;
+}
+
+.daily-action-button {
+  border-color: #9e8753;
+
+  background: #443d2b;
+
+  color: #f2d68e;
+}
+
+.daily-action-button:hover {
+  border-color: #e4c574;
+  background: #52482f;
+}
+
+.feature-secondary-button {
+  border: 1px solid #455f6b;
+
+  background: transparent;
+
+  color: #a9bfca;
+}
+
+.feature-secondary-button:hover {
+  border-color: #7ea2b0;
+  color: #edf5f7;
+}
+
+.feature-primary-button:focus-visible,
+.feature-secondary-button:focus-visible {
+  outline: 2px solid #7ce1ed;
+  outline-offset: 3px;
+}
+
+.feature-note {
+  margin: 18px 0 0;
+
+  padding-left: 9px;
+
+  border-left: 2px solid #415c67;
+
+  color: #8099a5;
+
+  font:
+    8px/1.6 Consolas,
+    monospace;
+}
+
+.feature-empty {
+  min-height: 420px;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+}
+
+.feature-empty .idle-radar {
+  width: 145px;
+  height: 145px;
+
+  margin-bottom: 32px;
+}
+
+.feature-empty .pokeball {
+  width: 72px;
+  height: 72px;
+}
+
+.feature-empty h4 {
+  margin: 5px 0;
+
+  color: #eaf2f5;
+
+  font-size: 22px;
+}
+
+.feature-empty p {
+  margin: 0;
+
+  color: #8fa7b2;
+
+  font-size: 11px;
+}
+
+
+/* =========================================
+   ROUTER / FEATURE RESPONSIVE
+   ========================================= */
+
+@media (max-width: 760px) {
+  .pokedex-nav {
+    margin:
+      -4px 2px 16px;
+
+    overflow-x: auto;
+  }
+
+  .pokedex-nav a {
+    flex: 1;
+
+    text-align: center;
+
+    white-space: nowrap;
+  }
+
+  .feature-display {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-art {
+    min-height: 165px;
+  }
+
+  .feature-page-header h3 {
+    font-size: 24px;
+  }
+
+  .feature-actions {
+    flex-direction: column;
+  }
+
+  .feature-primary-button,
+  .feature-secondary-button {
+    width: 100%;
+  }
+}

@@ -1,5 +1,7 @@
 ﻿import { useEffect, useState } from "react";
+
 import {
+  NavLink,
   Route,
   Routes,
   useLocation,
@@ -8,8 +10,11 @@ import {
 
 import PokemonList from "./components/PokemonList";
 import SearchBar from "./components/SearchBar";
+
 import PokedexPage from "./pages/PokedexPage";
 import PokemonPage from "./pages/PokemonPage";
+import DailyPage from "./pages/DailyPage";
+import DiscoverPage from "./pages/DiscoverPage";
 
 import type {
   PokemonListApiResponse,
@@ -95,19 +100,15 @@ export default function App() {
       });
   }, []);
 
-  const filteredPokemon = pokemon.filter(
-    (item) =>
+  const filteredPokemon =
+    pokemon.filter((item) =>
       item.name
         .toLowerCase()
         .includes(
           searchTerm.toLowerCase()
         )
-  );
+    );
 
-  /*
-   * If the URL is /pokemon/25, extract 25
-   * and use it to identify the active Pokémon.
-   */
   const pokemonRouteMatch =
     location.pathname.match(
       /^\/pokemon\/(\d+)$/
@@ -118,9 +119,6 @@ export default function App() {
       ? Number(pokemonRouteMatch[1])
       : null;
 
-  const isPokemonRoute =
-    pokemonRouteMatch !== null;
-
   const routePokemon =
     routePokemonId !== null
       ? pokemon.find(
@@ -129,17 +127,21 @@ export default function App() {
         ) ?? null
       : null;
 
-  /*
-   * On /pokemon/:id the URL decides
-   * which Pokémon is active.
-   *
-   * On the normal database page,
-   * selectedPokemon is used.
-   */
   const activePokemon =
-    isPokemonRoute
+    pokemonRouteMatch
       ? routePokemon
       : selectedPokemon;
+
+  const dailyIndex =
+    pokemon.length > 0
+      ? currentDayNumber %
+        pokemon.length
+      : null;
+
+  const pokemonOfTheDay =
+    dailyIndex !== null
+      ? pokemon[dailyIndex]
+      : null;
 
   function handlePokemonSelect(
     pokemonToSelect: PokemonSummary
@@ -148,82 +150,41 @@ export default function App() {
       pokemonToSelect
     );
 
+    setSearchTerm("");
+
     navigate(
       `/pokemon/${pokemonToSelect.id}`
     );
   }
 
-  function handleRandomPokemon() {
-    if (pokemon.length === 0) {
-      return;
-    }
-
-    const availablePokemon =
-      activePokemon
-        ? pokemon.filter(
-            (item) =>
-              item.id !==
-              activePokemon.id
-          )
-        : pokemon;
-
-    if (
-      availablePokemon.length === 0
-    ) {
-      return;
-    }
-
-    const randomIndex = Math.floor(
-      Math.random() *
-        availablePokemon.length
-    );
-
-    const randomPokemon =
-      availablePokemon[randomIndex];
-
+  function openDailyPage() {
     setSearchTerm("");
-
-    setSelectedPokemon(
-      randomPokemon
-    );
-
-    navigate(
-      `/pokemon/${randomPokemon.id}`
-    );
+    navigate("/daily");
   }
 
-  function getPokemonOfTheDay():
-    | PokemonSummary
-    | null {
-    if (pokemon.length === 0) {
-      return null;
-    }
-
-    const dailyIndex =
-      currentDayNumber %
-      pokemon.length;
-
-    return pokemon[dailyIndex];
-  }
-
-  const pokemonOfTheDay =
-    getPokemonOfTheDay();
-
-  function handleDailyPokemon() {
-    if (!pokemonOfTheDay) {
-      return;
-    }
-
+  function openDiscoverPage() {
     setSearchTerm("");
-
-    setSelectedPokemon(
-      pokemonOfTheDay
-    );
-
-    navigate(
-      `/pokemon/${pokemonOfTheDay.id}`
-    );
+    navigate("/discover");
   }
+
+  let scannerStatus = "STANDBY";
+
+  if (
+    location.pathname === "/daily"
+  ) {
+    scannerStatus = "DAILY MODE";
+  } else if (
+    location.pathname === "/discover"
+  ) {
+    scannerStatus =
+      "DISCOVERY MODE";
+  } else if (activePokemon) {
+    scannerStatus =
+      "TARGET SELECTED";
+  }
+
+  const isDiscoverPage =
+    location.pathname === "/discover";
 
   return (
     <div className="app">
@@ -258,10 +219,49 @@ export default function App() {
           Pokédex system
 
           <span className="system-version">
-            NATIONAL DATABASE / ROUTER BUILD
+            NATIONAL DATABASE / V2.0
           </span>
         </div>
       </header>
+
+      <nav
+        className="pokedex-nav"
+        aria-label="Pokédex navigation"
+      >
+        <NavLink
+          to="/"
+          end
+          className={({
+            isActive,
+          }) =>
+            isActive ? "active" : ""
+          }
+        >
+          Database
+        </NavLink>
+
+        <NavLink
+          to="/daily"
+          className={({
+            isActive,
+          }) =>
+            isActive ? "active" : ""
+          }
+        >
+          Daily
+        </NavLink>
+
+        <NavLink
+          to="/discover"
+          className={({
+            isActive,
+          }) =>
+            isActive ? "active" : ""
+          }
+        >
+          Discover
+        </NavLink>
+      </nav>
 
       <main className="pokedex-layout">
         <section
@@ -300,7 +300,7 @@ export default function App() {
                   type="button"
                   className="daily-pokemon-card"
                   onClick={
-                    handleDailyPokemon
+                    openDailyPage
                   }
                 >
                   <div className="daily-card-copy">
@@ -333,7 +333,7 @@ export default function App() {
                     </div>
 
                     <span className="daily-action">
-                      Open daily scan
+                      Open daily mode
 
                       <span
                         aria-hidden="true"
@@ -362,29 +362,34 @@ export default function App() {
                 type="button"
                 className="random-pokemon-button"
                 onClick={
-                  handleRandomPokemon
+                  openDiscoverPage
                 }
                 disabled={
                   loading ||
                   Boolean(error) ||
-                  pokemon.length === 0
+                  pokemon.length === 0 ||
+                  isDiscoverPage
                 }
               >
                 <span
                   className="random-button-icon"
                   aria-hidden="true"
                 >
-                  ⟳
+                  ◉
                 </span>
 
-                Random scan
+                {isDiscoverPage
+                  ? "Discovery mode active"
+                  : "Open discovery mode"}
               </button>
             </div>
           </div>
 
           <SearchBar
             searchTerm={searchTerm}
-            onSearch={setSearchTerm}
+            onSearch={
+              setSearchTerm
+            }
           />
 
           <div className="list-caption">
@@ -501,9 +506,7 @@ export default function App() {
             </div>
 
             <span className="scanner-status">
-              {activePokemon
-                ? "TARGET SELECTED"
-                : "STANDBY"}
+              {scannerStatus}
             </span>
           </div>
 
@@ -513,7 +516,7 @@ export default function App() {
               element={
                 <PokedexPage
                   selectedPokemon={
-                    activePokemon
+                    selectedPokemon
                   }
                 />
               }
@@ -525,6 +528,36 @@ export default function App() {
                 <PokemonPage
                   pokemon={pokemon}
                   loading={loading}
+                />
+              }
+            />
+
+            <Route
+              path="/daily"
+              element={
+                <DailyPage
+                  pokemon={
+                    pokemonOfTheDay
+                  }
+                  loading={loading}
+                  error={error}
+                  onOpenPokemon={
+                    handlePokemonSelect
+                  }
+                />
+              }
+            />
+
+            <Route
+              path="/discover"
+              element={
+                <DiscoverPage
+                  pokemon={pokemon}
+                  loading={loading}
+                  error={error}
+                  onOpenPokemon={
+                    handlePokemonSelect
+                  }
                 />
               }
             />
