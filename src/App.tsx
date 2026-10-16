@@ -1,7 +1,15 @@
 ﻿import { useEffect, useState } from "react";
+import {
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
+
 import PokemonList from "./components/PokemonList";
-import PokemonDetails from "./components/PokemonDetails";
 import SearchBar from "./components/SearchBar";
+import PokedexPage from "./pages/PokedexPage";
+import PokemonPage from "./pages/PokemonPage";
 
 import type {
   PokemonListApiResponse,
@@ -39,6 +47,9 @@ export default function App() {
 
   const [error, setError] =
     useState<string | null>(null);
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     fetch(
@@ -93,21 +104,72 @@ export default function App() {
         )
   );
 
+  /*
+   * If the URL is /pokemon/25, extract 25
+   * and use it to identify the active Pokémon.
+   */
+  const pokemonRouteMatch =
+    location.pathname.match(
+      /^\/pokemon\/(\d+)$/
+    );
+
+  const routePokemonId =
+    pokemonRouteMatch
+      ? Number(pokemonRouteMatch[1])
+      : null;
+
+  const isPokemonRoute =
+    pokemonRouteMatch !== null;
+
+  const routePokemon =
+    routePokemonId !== null
+      ? pokemon.find(
+          (item) =>
+            item.id === routePokemonId
+        ) ?? null
+      : null;
+
+  /*
+   * On /pokemon/:id the URL decides
+   * which Pokémon is active.
+   *
+   * On the normal database page,
+   * selectedPokemon is used.
+   */
+  const activePokemon =
+    isPokemonRoute
+      ? routePokemon
+      : selectedPokemon;
+
+  function handlePokemonSelect(
+    pokemonToSelect: PokemonSummary
+  ) {
+    setSelectedPokemon(
+      pokemonToSelect
+    );
+
+    navigate(
+      `/pokemon/${pokemonToSelect.id}`
+    );
+  }
+
   function handleRandomPokemon() {
     if (pokemon.length === 0) {
       return;
     }
 
     const availablePokemon =
-      selectedPokemon
+      activePokemon
         ? pokemon.filter(
             (item) =>
               item.id !==
-              selectedPokemon.id
+              activePokemon.id
           )
         : pokemon;
 
-    if (availablePokemon.length === 0) {
+    if (
+      availablePokemon.length === 0
+    ) {
       return;
     }
 
@@ -120,8 +182,13 @@ export default function App() {
       availablePokemon[randomIndex];
 
     setSearchTerm("");
+
     setSelectedPokemon(
       randomPokemon
+    );
+
+    navigate(
+      `/pokemon/${randomPokemon.id}`
     );
   }
 
@@ -151,6 +218,10 @@ export default function App() {
 
     setSelectedPokemon(
       pokemonOfTheDay
+    );
+
+    navigate(
+      `/pokemon/${pokemonOfTheDay.id}`
     );
   }
 
@@ -187,7 +258,7 @@ export default function App() {
           Pokédex system
 
           <span className="system-version">
-            NATIONAL DATABASE / V1.2
+            NATIONAL DATABASE / ROUTER BUILD
           </span>
         </div>
       </header>
@@ -385,10 +456,10 @@ export default function App() {
                 filteredPokemon
               }
               selectedPokemon={
-                selectedPokemon
+                activePokemon
               }
               onSelect={
-                setSelectedPokemon
+                handlePokemonSelect
               }
             />
           )}
@@ -430,17 +501,57 @@ export default function App() {
             </div>
 
             <span className="scanner-status">
-              {selectedPokemon
+              {activePokemon
                 ? "TARGET SELECTED"
                 : "STANDBY"}
             </span>
           </div>
 
-          <PokemonDetails
-            pokemon={
-              selectedPokemon
-            }
-          />
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <PokedexPage
+                  selectedPokemon={
+                    activePokemon
+                  }
+                />
+              }
+            />
+
+            <Route
+              path="/pokemon/:id"
+              element={
+                <PokemonPage
+                  pokemon={pokemon}
+                  loading={loading}
+                />
+              }
+            />
+
+            <Route
+              path="*"
+              element={
+                <div className="details-message error-message">
+                  <span
+                    className="signal-icon"
+                    aria-hidden="true"
+                  >
+                    !
+                  </span>
+
+                  <h3>
+                    Page not found
+                  </h3>
+
+                  <p>
+                    This Pokédex route
+                    does not exist.
+                  </p>
+                </div>
+              }
+            />
+          </Routes>
         </section>
       </main>
 
