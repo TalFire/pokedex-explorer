@@ -114,3 +114,17 @@ Added a BattleProfile component that fetches type damage relations and calculate
 
 I checked:
 Tested single-type and dual-type Pokémon, verified ×2 and combined multipliers such as ×4 and ×0.5, confirmed Random Scan and Pokémon of the Day update the profile correctly, and verified the project builds and lints successfully.
+
+---
+
+---
+
+## Task — Vitest unit tests and final TypeScript validation
+Prompt:
+Help me add meaningful Vitest unit tests and make sure the TypeScript configuration validates the real application code.
+
+Agent did:
+Extracted reusable Pokémon logic into TypeScript utilities, added Vitest tests for search, PokéAPI ID parsing, Pokémon of the Day, and Random Discovery, and fixed the TypeScript/Vite configuration.
+
+I checked:
+Ran typecheck, Vitest, lint, and production build successfully and verified that the routed Pokédex pages still work correctly.

@@ -21,6 +21,12 @@ import type {
   PokemonSummary,
 } from "./types/pokemon";
 
+import {
+  filterPokemonByName,
+  getPokemonIdFromUrl,
+  getPokemonOfTheDay,
+} from "./utils/pokemon";
+
 import "./App.css";
 
 function getCurrentDayNumber(): number {
@@ -35,14 +41,20 @@ function getCurrentDayNumber(): number {
   );
 }
 
-const currentDayNumber = getCurrentDayNumber();
+const currentDayNumber =
+  getCurrentDayNumber();
 
 export default function App() {
   const [pokemon, setPokemon] =
     useState<PokemonSummary[]>([]);
 
-  const [selectedPokemon, setSelectedPokemon] =
-    useState<PokemonSummary | null>(null);
+  const [
+    selectedPokemon,
+    setSelectedPokemon,
+  ] =
+    useState<PokemonSummary | null>(
+      null
+    );
 
   const [searchTerm, setSearchTerm] =
     useState("");
@@ -70,21 +82,15 @@ export default function App() {
         return response.json() as Promise<PokemonListApiResponse>;
       })
       .then((data) => {
-        const pokemonList: PokemonSummary[] =
-          data.results.map((item) => {
-            const id = Number(
+        const pokemonList:
+          PokemonSummary[] =
+          data.results.map((item) => ({
+            id: getPokemonIdFromUrl(
               item.url
-                .split("/")
-                .filter(Boolean)
-                .pop()
-            );
-
-            return {
-              id,
-              name: item.name,
-              url: item.url,
-            };
-          });
+            ),
+            name: item.name,
+            url: item.url,
+          }));
 
         setPokemon(pokemonList);
         setLoading(false);
@@ -101,12 +107,9 @@ export default function App() {
   }, []);
 
   const filteredPokemon =
-    pokemon.filter((item) =>
-      item.name
-        .toLowerCase()
-        .includes(
-          searchTerm.toLowerCase()
-        )
+    filterPokemonByName(
+      pokemon,
+      searchTerm
     );
 
   const pokemonRouteMatch =
@@ -123,7 +126,8 @@ export default function App() {
     routePokemonId !== null
       ? pokemon.find(
           (item) =>
-            item.id === routePokemonId
+            item.id ===
+            routePokemonId
         ) ?? null
       : null;
 
@@ -132,16 +136,11 @@ export default function App() {
       ? routePokemon
       : selectedPokemon;
 
-  const dailyIndex =
-    pokemon.length > 0
-      ? currentDayNumber %
-        pokemon.length
-      : null;
-
   const pokemonOfTheDay =
-    dailyIndex !== null
-      ? pokemon[dailyIndex]
-      : null;
+    getPokemonOfTheDay(
+      pokemon,
+      currentDayNumber
+    );
 
   function handlePokemonSelect(
     pokemonToSelect: PokemonSummary
@@ -174,7 +173,8 @@ export default function App() {
   ) {
     scannerStatus = "DAILY MODE";
   } else if (
-    location.pathname === "/discover"
+    location.pathname ===
+    "/discover"
   ) {
     scannerStatus =
       "DISCOVERY MODE";
@@ -184,7 +184,8 @@ export default function App() {
   }
 
   const isDiscoverPage =
-    location.pathname === "/discover";
+    location.pathname ===
+    "/discover";
 
   return (
     <div className="app">
@@ -194,11 +195,8 @@ export default function App() {
           aria-hidden="true"
         >
           <span className="sensor-lens" />
-
           <span className="indicator light-red" />
-
           <span className="indicator light-yellow" />
-
           <span className="indicator light-green" />
         </div>
 
@@ -234,7 +232,9 @@ export default function App() {
           className={({
             isActive,
           }) =>
-            isActive ? "active" : ""
+            isActive
+              ? "active"
+              : ""
           }
         >
           Database
@@ -245,7 +245,9 @@ export default function App() {
           className={({
             isActive,
           }) =>
-            isActive ? "active" : ""
+            isActive
+              ? "active"
+              : ""
           }
         >
           Daily
@@ -256,7 +258,9 @@ export default function App() {
           className={({
             isActive,
           }) =>
-            isActive ? "active" : ""
+            isActive
+              ? "active"
+              : ""
           }
         >
           Discover
@@ -367,7 +371,8 @@ export default function App() {
                 disabled={
                   loading ||
                   Boolean(error) ||
-                  pokemon.length === 0 ||
+                  pokemon.length ===
+                    0 ||
                   isDiscoverPage
                 }
               >
