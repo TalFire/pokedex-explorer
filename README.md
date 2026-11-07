@@ -13,6 +13,7 @@ No backend, database, authentication, paid service, or API key is required.
 The current version includes:
 
 - Pokémon database loaded from PokéAPI
+- More than 1,000 Pokémon species
 - Search by Pokémon name
 - Dedicated route for every Pokémon
 - Official Pokémon artwork
@@ -24,12 +25,16 @@ The current version includes:
 - Strengths and weaknesses
 - Resistances and immunities
 - Type effectiveness multipliers
+- Evolution chains
+- Branched evolution paths
+- Clickable evolution stages
 - Pokémon of the Day
 - Random Discovery mode
 - Loading states
 - Error states
 - Empty states
 - Responsive Pokédex-inspired UI
+- Independent desktop scrolling for the database and scanner panels
 
 ---
 
@@ -84,6 +89,7 @@ The project uses:
 - TypeScript
 - React Router
 - Vitest
+- Oxlint
 - Custom CSS
 - PokéAPI
 
@@ -95,11 +101,18 @@ The project uses the free public PokéAPI:
 
     https://pokeapi.co/
 
-Main Pokémon list:
+The main database is loaded from:
 
-    https://pokeapi.co/api/v2/pokemon?limit=60
+    https://pokeapi.co/api/v2/pokemon-species?limit=2000
 
-Additional Pokémon information is loaded from URLs returned by PokéAPI.
+The application then creates the corresponding Pokémon detail URLs using each species ID.
+
+Additional requests are made for:
+
+- Pokémon details
+- Type damage relations
+- Pokémon species information
+- Evolution chains
 
 No API key is required.
 
@@ -110,6 +123,8 @@ No API key is required.
     src/
     ├── components/
     │   ├── BattleProfile.tsx
+    │   ├── EvolutionChain.tsx
+    │   ├── EvolutionChain.css
     │   ├── PokemonDetails.tsx
     │   ├── PokemonList.tsx
     │   ├── PokemonListItem.tsx
@@ -130,6 +145,7 @@ No API key is required.
     │
     ├── App.tsx
     ├── App.css
+    ├── PokedexLayout.css
     ├── index.css
     ├── main.tsx
     └── vite-env.d.ts
@@ -176,36 +192,58 @@ Create a production build:
 
 Vitest is used for unit testing reusable application logic.
 
-The current tests cover:
+The current test suite includes 11 tests covering:
 
 - Extracting Pokémon IDs from PokéAPI URLs
+- Invalid Pokémon ID handling
 - Pokémon search filtering
+- Case-insensitive search
+- Empty search behavior
 - Pokémon of the Day calculation
+- Daily Pokémon cycling
+- Empty-list handling
 - Random Pokémon selection
+- Predictable random selection for testing
 - Preventing Random Discovery from immediately selecting the same Pokémon again
 
 ---
 
 ## Application Architecture
 
-`App.tsx` loads the main Pokémon database and owns the main application state.
+`main.tsx` is the application entry point.
 
-The Pokémon list is rendered using reusable React components.
+It renders the React application and wraps `App` with `BrowserRouter`, which enables client-side routing.
 
-Data is passed between components through props.
+`App.tsx` owns the main application state, including:
 
-React Router controls navigation between pages and provides a separate URL for every Pokémon.
+- the Pokémon database
+- the selected Pokémon
+- the search term
+- loading state
+- error state
 
-Detailed Pokémon information is loaded from PokéAPI when a Pokémon entry is opened.
+The initial Pokémon database is loaded from PokéAPI using `fetch` inside `useEffect`.
 
-Reusable application logic is stored separately in TypeScript utility functions so that it can also be unit tested.
+The data is stored in React state and passed to child components using props.
+
+React Router controls navigation between the database, individual Pokémon pages, Pokémon of the Day, and Random Discovery.
+
+When an individual Pokémon is opened, `PokemonDetails` fetches the full information for that Pokémon.
+
+`BattleProfile` uses the Pokémon's types to request type damage relations and calculate weaknesses, resistances, immunities, and offensive advantages.
+
+`EvolutionChain` uses the Pokémon species endpoint and evolution-chain endpoint to display the complete evolution structure. Evolution cards can be clicked to navigate directly to the corresponding Pokémon route.
+
+Reusable application logic such as search, Pokémon ID parsing, daily selection, and random selection is stored in `src/utils/pokemon.ts` so that it can be unit tested independently from the UI.
 
 ---
 
 ## AI-Assisted Development
 
-AI coding tools were used during the project for planning, implementation, debugging, UI/UX improvements, TypeScript migration, routing, and testing.
+AI coding tools were used during the project for planning, implementation, debugging, UI/UX improvements, TypeScript migration, routing, testing, and later feature enhancements.
 
-The AI-assisted development process is documented in the repository.
+The development process is documented in `PROMPTS.md`.
 
-The codebase was reviewed and tested during development, and the project owner is responsible for understanding the project architecture, components, state flow, routing, API usage, and tests.
+The project was developed gradually with separate Git commits for major stages and features.
+
+The codebase was reviewed and tested during development, and the project owner is responsible for understanding the project architecture, components, state flow, routing, API usage, TypeScript types, and tests.

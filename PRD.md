@@ -48,9 +48,11 @@ Route:
 
 The discovered Pokémon can then be opened in its full Pokédex entry.
 
+---
+
 ## 4. Must-have Features
 
-- Load Pokémon data from PokéAPI.
+- Load Pokémon data from a free public API.
 - Search Pokémon by name.
 - Display a Pokémon list using React components.
 - Open a dedicated route for every Pokémon.
@@ -66,6 +68,8 @@ The discovered Pokémon can then be opened in its full Pokédex entry.
 - Include at least two additional pages.
 - Work correctly on desktop and narrow screens.
 
+---
+
 ## 5. Acceptance Criteria
 
 - When I open the application, I see the Pokémon database.
@@ -80,11 +84,14 @@ The discovered Pokémon can then be opened in its full Pokédex entry.
 - When an API request fails, I see an error state.
 - When the application is used on a narrow screen, the interface remains usable.
 
+---
+
 ## 6. Additional Features
 
-The current version also includes:
+The final version also includes:
 
 - Pokédex-inspired device UI
+- More than 1,000 Pokémon species
 - Random Discovery
 - Pokémon of the Day
 - Battle Profile
@@ -93,19 +100,29 @@ The current version also includes:
 - Resistances
 - Immunities
 - Type effectiveness multipliers
+- Evolution chains
+- Branched evolution paths
+- Evolution conditions
+- Clickable evolution stages
+- Independent scrolling panels on desktop
 
-## 7. Not Now
+---
+
+## 7. Future Improvements
 
 Possible future improvements:
 
-- Evolution chains
-- Pokémon species information
+- Pokémon species descriptions
 - Game appearances
 - Favorites
 - Pokémon comparison
-- Additional filters
-- More Pokémon generations
+- Generation filters
+- Type filters
+- Ability filters
+- More advanced search
 - Who's That Pokémon mini-game
+
+---
 
 ## 8. Data
 
@@ -113,9 +130,16 @@ Public API:
 
     https://pokeapi.co/
 
-Main Pokémon list:
+Main Pokémon database:
 
-    https://pokeapi.co/api/v2/pokemon?limit=60
+    https://pokeapi.co/api/v2/pokemon-species?limit=2000
+
+Additional PokéAPI endpoints are used for:
+
+- Pokémon details
+- Pokémon species
+- Type damage relations
+- Evolution chains
 
 Data currently used includes:
 
@@ -127,4 +151,7 @@ Data currently used includes:
 - weight
 - abilities
 - stats
+- species
 - type damage relations
+- evolution chains
+- evolution conditions

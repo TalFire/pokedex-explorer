@@ -60,7 +60,7 @@ Completed.
 
 Load detailed Pokémon information and create a polished Pokédex-style interface.
 
-Features added:
+Features added during this stage:
 
 - official artwork
 - types
@@ -75,7 +75,7 @@ Features added:
 
 Done when:
 
-The Pokédex experience is functional, responsive, and visually complete.
+The main Pokédex experience is functional, responsive, and visually complete.
 
 Status:
 
@@ -129,16 +129,32 @@ Completed.
 
 ---
 
-## Task 8 — Add Vitest and prepare the project for submission
+## Task 8 — Testing, evolution features, and final project preparation
 
-Extract reusable logic into TypeScript utility functions and add unit tests using Vitest.
+Extract reusable application logic into TypeScript utility functions and add unit tests using Vitest.
+
+Add final Pokédex improvements after the core requirements are complete.
+
+Final improvements include:
+
+- Vitest unit tests
+- real TypeScript validation
+- expanded Pokémon database
+- Evolution Chain
+- branched evolution paths
+- clickable evolution cards
+- improved desktop layout
+- final documentation
+- final project validation
 
 Tests include:
 
 - PokéAPI Pokémon ID parsing
+- invalid ID handling
 - search filtering
 - Pokémon of the Day
 - random Pokémon selection
+- prevention of immediate random repetition
 
 Final validation commands:
 
@@ -149,8 +165,8 @@ Final validation commands:
 
 Done when:
 
-All validation commands complete successfully and the project documentation matches the final application.
+All validation commands complete successfully, the final application works without Console errors, and the repository documentation matches the final application.
 
 Status:
 
-In progress.
+Completed.
